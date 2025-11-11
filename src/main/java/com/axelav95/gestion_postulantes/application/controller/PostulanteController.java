@@ -2,6 +2,7 @@ package com.axelav95.gestion_postulantes.application.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,7 @@ public class PostulanteController {
         this.eliminarPostulanteUseCase = eliminarPostulanteUseCase;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECLUTADOR')")
     @PostMapping
     public PostulanteDTO crearPostulante(@Valid @RequestBody PostulanteDTO dto) {
         Postulante postulante = new Postulante(dto.getNombre(), dto.getEmail(), dto.getTelefono(), dto.getExperiencia());
@@ -44,7 +46,7 @@ public class PostulanteController {
         return new PostulanteDTO(creado.getId(), creado.getNombre(), creado.getEmail(), creado.getTelefono(), creado.getExperiencia())
         ;
     }
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public List<PostulanteDTO> listarPostulantes() {
         List<Postulante> postulantes = listarPostulantesUseCase.ejecutar();
@@ -53,6 +55,7 @@ public class PostulanteController {
                 .toList();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public PostulanteDTO buscarPostulantePorId(@PathVariable Long id) {
         return buscarPostulantePorIdUseCase.ejecutar(id)
@@ -60,6 +63,7 @@ public class PostulanteController {
                 .orElse(null);
     }
 
+     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void eliminarPostulante(@PathVariable Long id) {
         eliminarPostulanteUseCase.ejecutar(id);

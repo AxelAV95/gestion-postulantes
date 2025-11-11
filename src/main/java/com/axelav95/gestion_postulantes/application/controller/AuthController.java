@@ -17,7 +17,8 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public AuthController(UsuarioJpaRepository usuarioRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public AuthController(UsuarioJpaRepository usuarioRepository, PasswordEncoder passwordEncoder,
+            JwtService jwtService) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
@@ -46,7 +47,7 @@ public class AuthController {
             throw new RuntimeException("Contraseña incorrecta");
         }
 
-        String token = jwtService.generarToken(username);
+        String token = jwtService.generarToken(username, usuario.getRol());
         return Map.of("token", token);
     }
 }
