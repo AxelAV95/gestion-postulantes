@@ -17,6 +17,14 @@ public class PostulanteEntity {
 
     public PostulanteEntity() {}
 
+    public PostulanteEntity(String nombre, String email, String telefono, String experiencia) {
+        
+        this.nombre = nombre;
+        this.email = email;
+        this.telefono = telefono;
+        this.experiencia = experiencia;
+    }
+
     public PostulanteEntity(Long id, String nombre, String email, String telefono, String experiencia) {
         this.id = id;
         this.nombre = nombre;

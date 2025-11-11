@@ -3,11 +3,14 @@ package com.axelav95.gestion_postulantes.infrastructure.persistence.adapter;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Repository;
+
 import com.axelav95.gestion_postulantes.core.domain.Postulante;
 import com.axelav95.gestion_postulantes.core.repository.PostulanteRepository;
 import com.axelav95.gestion_postulantes.infrastructure.persistence.entity.PostulanteEntity;
 import com.axelav95.gestion_postulantes.infrastructure.persistence.jpa.PostulanteJpaRepository;
 
+@Repository
 public class PostulanteRepositoryImpl implements PostulanteRepository {
 
     private PostulanteJpaRepository jpaRepository;
@@ -18,7 +21,7 @@ public class PostulanteRepositoryImpl implements PostulanteRepository {
 
     @Override
     public Postulante guardar(Postulante postulante) {
-        PostulanteEntity entity = new PostulanteEntity(postulante.getId(), postulante.getNombre(), postulante.getEmail(), postulante.getTelefono(), postulante.getExperiencia());
+        PostulanteEntity entity = new PostulanteEntity( postulante.getNombre(), postulante.getEmail(), postulante.getTelefono(), postulante.getExperiencia());
         PostulanteEntity guardado = jpaRepository.save(entity);
         postulante.setId(guardado.getId());
         

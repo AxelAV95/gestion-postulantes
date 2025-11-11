@@ -3,11 +3,14 @@ package com.axelav95.gestion_postulantes.infrastructure.persistence.adapter;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Repository;
+
 import com.axelav95.gestion_postulantes.core.domain.Vacante;
 import com.axelav95.gestion_postulantes.core.repository.VacanteRepository;
 import com.axelav95.gestion_postulantes.infrastructure.persistence.entity.VacanteEntity;
 import com.axelav95.gestion_postulantes.infrastructure.persistence.jpa.VacanteJpaRepository;
 
+@Repository
 public class VacanteRepositoryImpl implements VacanteRepository {
 
     private final VacanteJpaRepository jpaRepository;
