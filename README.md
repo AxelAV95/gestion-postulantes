@@ -184,6 +184,56 @@ mvnw.cmd test
 
 Si usas IDE (IntelliJ/Eclipse) importa como proyecto Maven.
 
+## Pruebas (Tests) — cambios recientes
+
+Se han añadido pruebas unitarias/integración para los controladores REST, en particular `PostulanteControllerTest`.
+Esta prueba usa:
+
+- JUnit 5 (Jupiter): anotaciones como `@Test` vienen del paquete `org.junit.jupiter.api`.
+- Mockito: para mockear los casos de uso y servicios (`Mockito.when(...)`).
+- Spring MockMvc: con `@WebMvcTest` y `MockMvc` para probar los endpoints del controlador sin levantar todo el contexto.
+- `@MockitoBean` (Spring) para inyectar mocks en el contexto de prueba.
+
+Detalles concretos de la prueba añadida:
+
+- Archivo: `src/test/java/com/axelav95/gestion_postulantes/application/controller/PostulanteControllerTest.java`
+- Comportamiento probado: `debeCrearPostulanteConExito` — envía un POST a `/api/postulantes` con un JSON válido y espera `200 OK` y que el JSON devuelto contenga `nombre: "Ana"`.
+- Configuración de prueba: `@WebMvcTest(PostulanteController.class)` y `@AutoConfigureMockMvc(addFilters = false)` (se desactivan filtros de seguridad para la prueba).
+
+Dependencias necesarias
+
+Para resolver las importaciones y ejecutar las pruebas correctamente añade (si no están ya en `pom.xml`):
+
+- JUnit Jupiter (api + engine) — ej. `org.junit.jupiter:junit-jupiter:5.9.3` (scope `test`).
+- Mockito Core y la integración con JUnit Jupiter — ej. `org.mockito:mockito-core` y `org.mockito:mockito-junit-jupiter` (scope `test`).
+- Alternativa: incluir `spring-boot-starter-test` que ya trae JUnit 5 y Mockito configurados para Spring Boot.
+
+Cómo ejecutar las pruebas (Windows PowerShell)
+
+1) Desde la raíz del proyecto (donde está `mvnw.cmd`):
+
+```powershell
+.\mvnw.cmd clean test
+```
+
+2) Para ejecutar sólo el test de `PostulanteControllerTest`:
+
+```powershell
+.\mvnw.cmd -Dtest=PostulanteControllerTest test
+```
+
+Consejos si ves "The import org.junit cannot be resolved" o errores de imports similares:
+
+- Asegúrate de importar las dependencias de test en `pom.xml` y ejecutar `mvnw.cmd test` para que Maven descargue los artefactos necesarios.
+- Si usas un IDE, después de añadir las dependencias haz un "Maven -> Reimport" o "Reload project" para que el IDE actualice el classpath.
+- Preferible usar JUnit 5 (org.junit.jupiter.*). Si tu código usa `org.junit.*` (JUnit 4), considera migrarlo a JUnit 5 o añadir la dependencia de vintage, pero en este proyecto se usan anotaciones de JUnit 5.
+
+Notas
+
+- Las pruebas de controlador están diseñadas para ser rápidas y aisladas. Los casos de uso (usecases) se mockean para evitar acceder a la base de datos.
+- Para pruebas de integración completas que levanten el contexto y la base de datos embebida (H2), considera añadir `@SpringBootTest` y perfiles de prueba.
+
+
 ## Consideraciones de diseño y decisiones
 
 - Clean Architecture parcial: los casos de uso no dependen de frameworks; los adaptadores quedan en `infrastructure`.
