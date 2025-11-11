@@ -89,6 +89,38 @@ DTOs (ejemplo: `PostulanteDTO`) incluyen validaciones (Jakarta Validation):
 
 Mapping: Los controladores crean instancias de dominio desde DTOs y viceversa cuando devuelven respuestas.
 
+### MapStruct — mapeo automático entre DTOs y entidades
+
+En las versiones recientes del proyecto se incorporó MapStruct para reemplazar el mapeo manual entre DTOs y objetos del dominio.
+MapStruct es un generador de código que crea implementaciones de mappers en tiempo de compilación, lo que ofrece:
+
+- Código más limpio: evita escribir transformaciones repetitivas (copiar campos uno por uno).
+- Menor probabilidad de errores humanos en conversiones.
+- Mejor rendimiento que soluciones basadas en reflexión porque MapStruct genera código estático.
+
+Cómo se usa aquí (resumen):
+
+- Definimos interfaces de mapper en `src/main/java/.../application/mapper`, por ejemplo `PostulanteMapper`.
+- Anotamos la interfaz con `@Mapper` (o usamos `@Mapper(componentModel = "spring")` para que Spring pueda inyectarla).
+- MapStruct genera la implementación en `target/generated-sources/annotations` durante la compilación.
+- En los controladores y casos de uso se inyecta el mapper y se usa para convertir `PostulanteDTO` <-> `Postulante`.
+
+Ejemplo (conceptual):
+
+```java
+@Mapper(componentModel = "spring")
+public interface PostulanteMapper {
+  PostulanteDTO toDTO(Postulante postulante);
+  Postulante toDomain(PostulanteDTO dto);
+}
+```
+
+Consejos:
+
+- Asegúrate de tener la dependencia de MapStruct y el procesador de anotaciones (`mapstruct-processor`) en `pom.xml`.
+- Si usas Spring, `componentModel = "spring"` permite inyectar el mapper con `@Autowired`.
+
+
 ## Casos de uso (Use Cases)
 
 Los use cases agrupan casos de negocio por contexto. Ejemplos en `usecase/postulante`:
@@ -240,6 +272,38 @@ Notas
 - DTOs con validación en la capa de entrada evitan que datos inválidos lleguen a la lógica de negocio.
 - Uso de `UseCaseConfig` permite configuración explícita y testing manual de beans.
 
+### Clean Architecture (explicado de forma sencilla)
+
+Este proyecto aplica ideas de Clean Architecture para mantener el código modular y fácil de mantener. Aquí lo explicamos en términos simples:
+
+- Separación por capas (qué hace cada una):
+  - Core / Domain (`core/domain`): reglas de negocio y modelos puros (sin dependencias a frameworks). Aquí viven las clases como `Postulante`, `Vacante` y `Postulacion`.
+  - Puertos / Interfaces (`core/repository`): contratos que describen lo que la aplicación necesita (por ejemplo `PostulanteRepository`) sin decir cómo se implementa.
+  - Casos de uso (`usecase`): la lógica de la aplicación (interactores) que orquesta operaciones usando los puertos. No conocen implementación concreta de la persistencia.
+  - Adaptadores de entrada (`application/*`): controladores REST, DTOs y mapeos. Convierten solicitudes externas en llamadas a los casos de uso.
+  - Adaptadores de salida (`infrastructure/persistence/adapter`, `infrastructure/jpa`, `infrastructure/entity`): implementaciones concretas (JPA, repositorios) que cumplen los contratos definidos en `core/repository`.
+
+- Regla clave (Dependency Rule): las dependencias apuntan hacia adentro. Las capas externas conocen a las internas, pero nunca al revés. Por ejemplo, `usecase` conoce `core.domain` y `core.repository`, pero `core.domain` no depende de `usecase` ni de Spring.
+
+- Ventajas prácticas para este proyecto:
+  - Facilita testing: puedes mockear repositorios al probar casos de uso y controlar el comportamiento sin tocar la base de datos.
+  - Reemplazo de infra fácil: cambiar de JPA a otro almacenamiento sólo requiere implementar los adaptadores, no reescribir casos de uso.
+  - Código más explícito: los contratos (interfaces) dejan claro qué operaciones ofrece la aplicación.
+
+- Cómo aplicarlo aquí (mapa rápido a carpetas):
+  - Entidades y modelos: `src/main/java/.../core/domain`
+  - Interfaces/puertos: `src/main/java/.../core/repository`
+  - Casos de uso: `src/main/java/.../usecase`
+  - Controladores y DTOs: `src/main/java/.../application`
+  - Implementaciones de persistencia: `src/main/java/.../infrastructure/persistence` (entity, jpa, adapter)
+
+Si algún colaborador necesita empezar a trabajar en una nueva funcionalidad, un buen patrón es:
+1. Definir el caso de uso (métodos/contrato) y añadir tests para él.
+2. Añadir o actualizar la interfaz en `core/repository` si es necesario.
+3. Implementar la lógica en `usecase` usando las interfaces.
+4. Crear/actualizar adaptadores y controladores para exponer la funcionalidad.
+
+
 Edge cases y validaciones comunes:
 
 - Validar unicidad de email al crear postulantes (no implementado en el DTO).
@@ -252,6 +316,5 @@ Edge cases y validaciones comunes:
 - Implementar paginación y filtros en listados.
 - Añadir DTOs para Vacante y Postulacion con validaciones y endpoints completos.
 - Tests unitarios y de integración para Use Cases y controladores (mock MVC o Spring Boot test).
-- Documentación automática de la API (Swagger / OpenAPI).
 
 Autor: Axel A.V
