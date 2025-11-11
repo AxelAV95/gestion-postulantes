@@ -1,6 +1,7 @@
 package com.axelav95.gestion_postulantes.usecase.postulante;
 
 import com.axelav95.gestion_postulantes.core.domain.Postulante;
+import com.axelav95.gestion_postulantes.core.repository.PostulanteRepository;
 
 public class CrearPostulanteUseCase {
     private final PostulanteRepository repository;

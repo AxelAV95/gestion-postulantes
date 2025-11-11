@@ -1,6 +1,7 @@
 package com.axelav95.gestion_postulantes.usecase.vacante;
 
 import com.axelav95.gestion_postulantes.core.domain.Vacante;
+import com.axelav95.gestion_postulantes.core.repository.VacanteRepository;
 
 public class CrearVacanteUseCase {
    private final VacanteRepository repository;

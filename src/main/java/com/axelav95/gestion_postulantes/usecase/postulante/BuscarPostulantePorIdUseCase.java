@@ -3,6 +3,7 @@ package com.axelav95.gestion_postulantes.usecase.postulante;
 import java.util.Optional;
 
 import com.axelav95.gestion_postulantes.core.domain.Postulante;
+import com.axelav95.gestion_postulantes.core.repository.PostulanteRepository;
 
 public class BuscarPostulantePorIdUseCase {
     private final PostulanteRepository repository;

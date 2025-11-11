@@ -1,5 +1,7 @@
 package com.axelav95.gestion_postulantes.usecase.postulante;
 
+import com.axelav95.gestion_postulantes.core.repository.PostulanteRepository;
+
 public class EliminarPostulanteUseCase {
     private final PostulanteRepository repository;
 
