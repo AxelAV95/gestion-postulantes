@@ -204,14 +204,4 @@ Edge cases y validaciones comunes:
 - Tests unitarios y de integración para Use Cases y controladores (mock MVC o Spring Boot test).
 - Documentación automática de la API (Swagger / OpenAPI).
 
-## Notas finales
-
-Este README resume la arquitectura y puntos clave para desarrolladores que quieran entender o extender el proyecto. Si quieres, puedo:
-
-- Añadir documentación OpenAPI / Swagger.
-- Generar ejemplos de tests unitarios para un Use Case.
-- Crear diagramas (plantuml) o un diagrama de secuencia para el flujo de autenticación y creación de postulantes.
-
----
-
 Autor: Axel A.V
