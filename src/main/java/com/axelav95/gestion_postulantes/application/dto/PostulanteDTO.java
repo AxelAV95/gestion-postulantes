@@ -29,6 +29,14 @@ public class PostulanteDTO {
             this.experiencia = experiencia;
         }
 
+        public PostulanteDTO( String nombre, String email, String telefono, String experiencia) {
+       
+            this.nombre = nombre;
+            this.email = email;
+            this.telefono = telefono;
+            this.experiencia = experiencia;
+        }
+
         // Getters y Setters
         public Long getId() {
             return id;

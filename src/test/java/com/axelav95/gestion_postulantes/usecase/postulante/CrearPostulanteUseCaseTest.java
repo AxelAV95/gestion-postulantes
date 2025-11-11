@@ -14,7 +14,7 @@ public class CrearPostulanteUseCaseTest {
         // Arrange
         PostulanteRepository repo = Mockito.mock(PostulanteRepository.class);
         CrearPostulanteUseCase useCase = new CrearPostulanteUseCase(repo);
-        Postulante p = new Postulante(null, "Ana", "ana@mail.com", "1234", "3 años");
+        Postulante p = new Postulante( "Ana", "ana@mail.com", "1234", "3 años");
 
         Mockito.when(repo.guardar(p)).thenReturn(new Postulante(1L, "Ana", "ana@mail.com", "1234", "3 años"));
 
