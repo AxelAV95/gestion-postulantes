@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.axelav95.gestion_postulantes.application.dto.PostulanteDTO;
 import com.axelav95.gestion_postulantes.core.domain.Postulante;
-import com.axelav95.gestion_postulantes.usecase.postulacion.CrearPostulacionUseCase;
 import com.axelav95.gestion_postulantes.usecase.postulante.BuscarPostulantePorIdUseCase;
 import com.axelav95.gestion_postulantes.usecase.postulante.CrearPostulanteUseCase;
 import com.axelav95.gestion_postulantes.usecase.postulante.EliminarPostulanteUseCase;
 import com.axelav95.gestion_postulantes.usecase.postulante.ListarPostulantesUseCase;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/postulantes")
@@ -37,7 +38,7 @@ public class PostulanteController {
     }
 
     @PostMapping
-    public PostulanteDTO crearPostulante(@RequestBody PostulanteDTO dto) {
+    public PostulanteDTO crearPostulante(@Valid @RequestBody PostulanteDTO dto) {
         Postulante postulante = new Postulante(dto.getNombre(), dto.getEmail(), dto.getTelefono(), dto.getExperiencia());
         Postulante creado = crearPostulanteUseCase.ejecutar(postulante);
         return new PostulanteDTO(creado.getId(), creado.getNombre(), creado.getEmail(), creado.getTelefono(), creado.getExperiencia())
